@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sportwave — Live Football Streams</title>
+  <meta name="description" content="Sportwave — Live football streams, fixtures, and match viewer" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --primary:#e50914; /* DAZN / Sportwave red */
+      --secondary:#ff3366; /* accent pink */
+      --white:#FFFFFF;
+      --muted:#1a1a1a;
+      --card-shadow: 0 8px 24px rgba(0,0,0,0.25);
+      --accent: linear-gradient(135deg,var(--primary),var(--secondary));
+      font-family: 'Montserrat', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:#000;color:var(--white);min-height:100vh}
+    .container{max-width:1150px;margin:36px auto;padding:0 18px}
+
+    /* Header */
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
+    .brand{display:flex;align-items:center;gap:14px}
+    .logo{width:72px;height:72px;border-radius:12px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:20px}
+    .title{line-height:1}
+    .title h1{margin:0;font-size:20px}
+    .title p{margin:0;font-size:12px;opacity:0.9}
+
+    /* Hero */
+    .hero{background:rgba(255,255,255,0.05);border-radius:16px;padding:18px;margin-bottom:22px;display:flex;gap:18px;align-items:center}
+    .hero .left{flex:1}
+    .hero .right{width:220px;text-align:right}
+    .badge{background:rgba(255,255,255,0.15);display:inline-block;padding:6px 10px;border-radius:999px;font-weight:600}
+    .cta{margin-top:12px;display:inline-block;background:var(--accent);color:#fff;padding:10px 16px;border-radius:10px;font-weight:700;text-decoration:none}
+
+    /* Filters row */
+    .controls{display:flex;gap:12px;align-items:center;margin:18px 0}
+    .controls input, .controls select{padding:10px 12px;border-radius:10px;border:0;background:rgba(255,255,255,0.08);color:var(--white)}
+
+    /* Cards grid */
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,0.05), rgba(255,255,255,0.02));padding:14px;border-radius:12px;box-shadow:var(--card-shadow);display:flex;gap:12px;align-items:center}
+    .thumb{width:84px;height:84px;border-radius:10px;background:var(--muted);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
+    .meta{flex:1}
+    .meta h3{margin:0;font-size:16px}
+    .meta p{margin:6px 0 0 0;font-size:13px;color:rgba(255,255,255,0.8)}
+    .ticket{align-self:flex-start;background:rgba(255,255,255,0.08);padding:8px 10px;border-radius:10px;font-weight:700}
+    .watch-btn{display:inline-block;margin-top:10px;padding:8px 12px;border-radius:8px;background:var(--accent);color:#fff;font-weight:700;text-decoration:none;cursor:pointer;border:none;font-family:inherit}
+
+    /* Viewer */
+    .viewer-container{display:none;margin-top:24px}
+    .viewer{padding:18px;background:rgba(255,255,255,0.05);border-radius:12px}
+    .player{position:relative;padding-top:56.25%;border-radius:10px;overflow:hidden;background:#000}
+    .player iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+    .match-head{display:flex;align-items:center;justify-content:space-between;margin-top:12px;gap:12px}
+    .teams{display:flex;gap:12px;align-items:center}
+    .team{background:rgba(255,255,255,0.05);padding:8px 12px;border-radius:8px}
+    .back{display:inline-block;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,0.1);cursor:pointer}
+
+    /* Twitch Chat */
+    .twitch-chat{display:none;margin-top:16px}
+    .twitch-chat.active{display:block}
+    .chat-toggle{display:inline-block;margin-top:10px;padding:6px 10px;border-radius:6px;background:rgba(255,255,255,0.15);color:var(--white);font-weight:600;cursor:pointer;font-size:12px;border:none;font-family:inherit}
+
+    /* Footer */
+    footer{margin:34px 0 60px;color:rgba(255,255,255,0.6);font-size:13px;text-align:center}
+
+    /* Loading animation */
+    .loading{display:inline-block;width:20px;height:20px;border:3px solid rgba(255,255,255,.3);border-radius:50%;border-top-color:#fff;animation:spin 1s ease-in-out infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* small */
+    @media(max-width:640px){.hero{flex-direction:column;align-items:flex-start}.hero .right{text-align:left;width:100%}}
+    @media(min-width:1024px){
+      .viewer-container.active{display:flex;gap:16px}
+      .viewer{flex:3}
+      .twitch-chat{flex:1;min-width:300px}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo">SW</div>
+        <div class="title">
+          <h1>Sportwave — Live Streams</h1>
+          <p>VRFS • Fixtures • Match Viewer</p>
+        </div>
+      </div>
+      <div>
+        <div style="text-align:right"><strong>Sportwave</strong><br><small>Community stream hub</small></div>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="left">
+        <div class="badge">Live VRFS Streams</div>
+        <h2 style="margin:8px 0 0 0">Catch every match live</h2>
+        <p style="margin:6px 0 0 0;opacity:0.9">Select a fixture below and click "Watch Live".</p>
+        <a class="cta" href="#streams">View Live Streams</a>
+      </div>
+      <div class="right">
+        <div style="font-size:12px;opacity:0.9">Next match</div>
+        <div style="font-weight:700;margin-top:6px" id="nextMatch">— Loading —</div>
+      </div>
+    </section>
+
+    <div class="controls">
+      <input id="search" placeholder="Search teams or competition" />
+      <select id="filterDate"><option value="all">All dates</option></select>
+      <button id="refresh" class="back">Refresh</button>
+    </div>
+
+    <main>
+      <section id="streams">
+        <div class="grid" id="cards"></div>
+      </section>
+
+      <section id="viewer-container" class="viewer-container">
+        <section id="viewer" class="viewer">
+          <div class="player" id="playerWrap"></div>
+          <div class="match-head">
+            <div class="teams" id="matchInfo"></div>
+            <div>
+              <span class="back" id="closeViewer">Close</span>
+              <span class="chat-toggle" id="toggleChat" style="display:none">Show Chat</span>
+            </div>
+          </div>
+        </section>
+
+        <section id="twitch-chat" class="twitch-chat">
+          <div class="player" id="chatWrap"></div>
+        </section>
+      </section>
+    </main>
+
+    <footer>
+      Sportwave • Live VRFS Streams
+    </footer>
+  </div>
+
+  <script>
+    // (JavaScript stays the same — no CWC text inside)
+    // ...
+  </script>
+</body>
+</html>
